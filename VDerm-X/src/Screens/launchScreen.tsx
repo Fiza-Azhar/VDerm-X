@@ -142,5 +142,4 @@ const styles = StyleSheet.create({
     fontWeight: "600", // Semi-bold font weight
   },
 });
-
 export default LaunchScreen;
