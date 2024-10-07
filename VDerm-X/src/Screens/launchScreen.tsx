@@ -7,6 +7,36 @@ const LaunchScreen = ({ navigation }: any) => {
   const textOpacity = useRef(new Animated.Value(0)).current; // For text fade-in
   const textScale = useRef(new Animated.Value(0.8)).current; // For text scaling
 
+  useEffect(() => {
+    Animated.sequence([
+      // Logo animation: fade in and slide down
+      Animated.parallel([
+        Animated.timing(logoOpacity, {
+          toValue: 1,
+          duration: 1000,
+          useNativeDriver: true,
+        }),
+        Animated.timing(logoTranslateY, {
+          toValue: 0,
+          duration: 1000,
+          useNativeDriver: true,
+        }),
+      ]),
+      // Text animation: fade in and scale
+      Animated.parallel([
+        Animated.timing(textOpacity, {
+          toValue: 1,
+          duration: 1000,
+          useNativeDriver: true,
+        }),
+        Animated.timing(textScale, {
+          toValue: 1,
+          duration: 1000,
+          useNativeDriver: true,
+        }),
+      ]),
+    ]).start();
+  }, []);
 
   return (
     <View style={styles.container}>
