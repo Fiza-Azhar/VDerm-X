@@ -42,11 +42,7 @@ const RegisterScreen = ({ navigation }: any) => {
       return;
     }
 
-    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
-    if (!passwordRegex.test(password)) {
-      Alert.alert("Error", "Password must meet the complexity requirements.");
-      return;
-    }
+
 
     try {
       const response = await fetch(`${BASE_URL}/auth/signup`, {
