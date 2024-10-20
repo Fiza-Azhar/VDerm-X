@@ -8,7 +8,7 @@ export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @Post('signup')
-  async signup(
+   async signup(
     @Body('username') username: string, 
     @Body('email') email: string, 
     @Body('password') password: string

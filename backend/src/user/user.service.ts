@@ -41,7 +41,7 @@ export class UserService {
     await transporter.sendMail(mailOptions);
   }
 
-  async signup(username: string, email: string, password: string): Promise<User> {
+async signup(username: string, email: string, password: string): Promise<User> {
     const existingUser = await this.userModel.findOne({ email });
 
     if (existingUser) {
