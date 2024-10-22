@@ -29,7 +29,7 @@ export class UserController {
   }
   
 
-  @Post('login')
+   @Post('login')
   async login(@Body('email') email: string, @Body('password') password: string): Promise<User> {
     return this.userService.login(email, password);
   }

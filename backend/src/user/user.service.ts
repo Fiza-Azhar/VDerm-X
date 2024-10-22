@@ -151,7 +151,7 @@ async signup(username: string, email: string, password: string): Promise<User> {
   }
 
   
-  async login(email: string, password: string): Promise<User> {
+   async login(email: string, password: string): Promise<User> {
     const user = await this.userModel.findOne({ email });
     if (!user) {
       throw new UnauthorizedException('Invalid credentials');
