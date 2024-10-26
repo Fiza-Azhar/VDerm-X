@@ -98,7 +98,7 @@ async signup(username: string, email: string, password: string): Promise<User> {
   }
 
 
-  async verifyOtp(email: string, otp: string): Promise<User> {
+   async verifyOtp(email: string, otp: string): Promise<User> {
     const user = await this.userModel.findOne({ email });
 
     if (!user) {

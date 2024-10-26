@@ -23,7 +23,7 @@ export class UserController {
 
     return this.userService.resendOtp(email);
   }
-  @Post('verify-otp')
+@Post('verify-otp')
   async verifyOtp(@Body('email') email: string, @Body('otp') otp: string): Promise<User> {
     return this.userService.verifyOtp(email, otp);
   }
