@@ -15,7 +15,7 @@ export class UserController {
   ): Promise<User> {
     return this.userService.signup(username, email, password);
   }
-  @Post('resend-otp')
+    @Post('resend-otp')
   async resendOtp(@Body('email') email: string): Promise<{ message: string }> {
     if (!email) {
       throw new BadRequestException('Email is required');
