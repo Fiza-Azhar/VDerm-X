@@ -12,6 +12,7 @@ model = load_model('final_model.keras')
 # Check the input shape of the model
 print("Model Input Shape:", model.input_shape)
 
+
 def preprocess_image(image_data):
     # Decode the base64 image
     image_data = base64.b64decode(image_data)
@@ -20,6 +21,7 @@ def preprocess_image(image_data):
     image = np.array(image) / 255.0  # Normalize pixel values
     image = np.expand_dims(image, axis=0)  # Add batch dimension
     return image
+
 
 
 @app.route('/predict', methods=['POST'])
