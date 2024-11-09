@@ -11,8 +11,8 @@ os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'  # Suppress TensorFlow logging (error o
 os.environ['TF_ENABLE_ONEDNN_OPTS'] = '0'  # Disable oneDNN optimizations warnings
 
 # Ensure the model is loaded from the same folder as the script
- script_dir = os.path.dirname(os.path.abspath(__file__))  # Get the current script directory
- model_path = os.path.join(script_dir, 'final_model.keras')  # Model is in the same directory as the script
+script_dir = os.path.dirname(os.path.abspath(__file__))  # Get the current script directory
+model_path = os.path.join(script_dir, 'final_model.keras')  # Model is in the same directory as the script
 
 # Check if the model file exists
  if not os.path.exists(model_path):
