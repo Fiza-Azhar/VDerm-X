@@ -51,7 +51,26 @@ const LoginScreen = ({ navigation }: any) => {
       return;
     }
 
+    try {
+      const response = await fetch(`${BASE_URL}/auth/login`, { // Updated endpoint
+          method: 'POST',
+          headers: {
+              'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(userData),
+      });
 
+      const data = await response.json();
+
+      if (response.ok) {
+          // Navigate to HomePage on successful login
+          navigation.navigate("Home");
+      } else {
+          Alert.alert('Error', data.message);
+      }
+  } catch (error) {
+      Alert.alert('Error', 'Error during login');
+  }
 };
 
   return (
