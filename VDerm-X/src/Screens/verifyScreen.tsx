@@ -9,7 +9,21 @@ const VerifyScreen = ({ route, navigation }: any) => {
   const [isResendDisabled, setIsResendDisabled] = useState(false); // Disable resend OTP button
   const inputs = useRef<Array<TextInput | null>>([]); // Refs for each input box
 
+  // Start timer when the page loads
+  useEffect(() => {
+    setIsResendDisabled(true); // Disable resend button initially
+    const interval = setInterval(() => {
+      setTimer((prevTimer) => {
+        if (prevTimer === 1) {
+          clearInterval(interval);
+          setIsResendDisabled(false); // Enable resend button after 60 seconds
+        }
+        return prevTimer - 1;
+      });
+    }, 1000);
 
+    return () => clearInterval(interval); // Cleanup the interval on unmount
+  }, []); // Empty dependency array ensures this runs only once when the page is loaded
 
   const handleVerify = async () => {
     if (otp.some((digit) => digit === "")) {
