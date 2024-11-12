@@ -47,7 +47,7 @@ const VerifyScreen = ({ route, navigation }: any) => {
         Alert.alert("Error", data.message || "OTP verification failed.");
       }
     } catch (error) {
-      
+      Alert.alert("Error", "An error occurred during OTP verification.");
     }
   };
 
