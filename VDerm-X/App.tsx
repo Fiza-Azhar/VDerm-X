@@ -9,6 +9,8 @@ import HomeScreen from './src/Screens/homeScreen';
 import RegisterScreen from './src/Screens/registerScreen'; // Assuming you will create this later
 import VetsScreen from './src/Screens/vetsScreen';
 import DiagnosticScreen from './src/Screens/diagnosticScreen';
+import BookAppointmentScreen from './src/Screens/bookAppointmentScreen';
+
 
 // Define the param list for all screens
 export type RootStackParamList = {
@@ -19,6 +21,7 @@ export type RootStackParamList = {
   Home: undefined; 
   Vets: undefined; 
   Diagnosis:undefined;
+  BookAppointment: undefined;
 };
 
 // Create a stack navigator
@@ -39,6 +42,7 @@ const App = () => {
         <Stack.Screen name="Home" component={HomeScreen} options={{ headerShown: false }}/>
         <Stack.Screen name="Vets" component={VetsScreen} options={{ headerShown: false }}/>
         <Stack.Screen name='Diagnosis' component={DiagnosticScreen} options={{headerShown:false}}/>
+        <Stack.Screen name='BookAppointment' component={BookAppointmentScreen} options={{headerShown:false}}/>
       </Stack.Navigator>
     </NavigationContainer>
   );
