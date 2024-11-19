@@ -12,6 +12,7 @@ export class Vet {
   @Column()
   specialization: string;
 
+  
   @Column()
   certificate:File;
 

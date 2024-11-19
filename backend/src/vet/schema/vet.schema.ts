@@ -11,6 +11,7 @@ export const VetSchema = new Schema({
   imageUrl: { type: String },
 });
 
+
 export interface Vet extends Document {
   id: string;
   name: string;
