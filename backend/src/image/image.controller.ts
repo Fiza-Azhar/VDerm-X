@@ -76,6 +76,8 @@ import * as fs from 'fs';
 import * as path from 'path';
 import * as os from 'os';  // For creating temporary files
 
+
+
 @Controller('images')
 export class ImageControllerr {
   @Post('predicts')
