@@ -13,21 +13,25 @@ export class VetController {
     return this.vetService.findAll();
   }
 
+
   @Get(':id')
   async getOne(@Param('id') id: string): Promise<Vet> {
     return this.vetService.findOne(id);
   }
+
 
   @Post('createvets')
   async create(@Body() vetData: Partial<Vet>): Promise<Vet> {
     return this.vetService.create(vetData);
   }
 
+
   @Put(':id')
   async update(@Param('id') id: string, @Body() updateData: Partial<Vet>): Promise<Vet> {
     return this.vetService.update(id, updateData);
   }
 
+  
   @Delete(':id')
   async delete(@Param('id') id: string): Promise<Vet> {
     return this.vetService.delete(id);

@@ -13,6 +13,7 @@ export class VetService {
     return this.vetModel.find().exec();
   }
 
+  
   async findOne(id: string): Promise<Vet> {
     return this.vetModel.findById(id).exec();
   }
