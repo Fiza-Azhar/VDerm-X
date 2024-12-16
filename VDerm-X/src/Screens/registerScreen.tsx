@@ -7,8 +7,6 @@ import {
   TextInput,
   Animated,
   Image,
-  Modal,
-  Alert
 } from "react-native";
 
 const RegisterScreen = ({ navigation }: any) => {
@@ -19,28 +17,10 @@ const RegisterScreen = ({ navigation }: any) => {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [otp, setOtp] = useState(""); // State for OTP
-  const [otpSent, setOtpSent] = useState(false); // State to track if OTP has been sent
-  const [timer, setTimer] = useState(60); // Timer for 1 minute
-  const [modalVisible, setModalVisible] = useState(false); // State for modal visibility
-
-  // Timer effect
-  useEffect(() => {
-    let intervalId: any;
-    if (otpSent && timer > 0) {
-      intervalId = setInterval(() => {
-        setTimer((prevTime) => prevTime - 1);
-      }, 1000);
-    } else if (timer === 0) {
-      Alert.alert("OTP expired", "The OTP has expired. Please request a new one.");
-    }
-
-    return () => clearInterval(intervalId);
-  }, [otpSent, timer]);
 
   useEffect(() => {
     // Animations for logo and form
-    Animated.sequence([ 
+    Animated.sequence([
       Animated.timing(logoOpacity, {
         toValue: 1,
         duration: 800,
@@ -66,20 +46,8 @@ const RegisterScreen = ({ navigation }: any) => {
     console.log("Email:", email);
     console.log("Password:", password);
 
-    // Send OTP (simulate by showing modal)
-    setOtpSent(true);
-    setModalVisible(true);
-
-    // Send OTP to the email here (backend call to send OTP)
-  };
-
-  const handleVerifyOtp = () => {
-    if (otp === "123456") {
-      // OTP is correct, navigate to Login screen
-      navigation.navigate("Login");
-    } else {
-      Alert.alert("Invalid OTP", "The OTP entered is incorrect. Please try again.");
-    }
+    // Simulate a registration process (you should replace this with an API call)
+    navigation.navigate("Verify", { email }); // Pass email to the Verify screen
   };
 
   return (
@@ -140,40 +108,6 @@ const RegisterScreen = ({ navigation }: any) => {
           <Text style={styles.loginText}>Already have an account? Login</Text>
         </TouchableOpacity>
       </Animated.View>
-
-      {/* OTP Modal Dialog */}
-      <Modal visible={modalVisible} animationType="slide" transparent={true}>
-        <View style={styles.modalContainer}>
-          <View style={styles.modalContent}>
-            <Text style={styles.modalTitle}>Enter OTP</Text>
-
-            {/* OTP Input */}
-            <TextInput
-              style={styles.input}
-              placeholder="Enter OTP"
-              placeholderTextColor="#888"
-              value={otp}
-              onChangeText={(text) => setOtp(text)}
-              keyboardType="numeric"
-            />
-
-            {/* Timer */}
-            <Text style={styles.timerText}>Time Remaining: {timer}s</Text>
-
-            {/* Verify OTP Button */}
-            <TouchableOpacity style={styles.registerButton} onPress={handleVerifyOtp}>
-              <Text style={styles.registerButtonText}>Verify OTP</Text>
-            </TouchableOpacity>
-
-            {/* Resend OTP Link */}
-            {timer === 0 && (
-              <TouchableOpacity onPress={() => setTimer(60)}>
-                <Text style={styles.resendText}>Resend OTP</Text>
-              </TouchableOpacity>
-            )}
-          </View>
-        </View>
-      </Modal>
     </View>
   );
 };
@@ -237,35 +171,6 @@ const styles = StyleSheet.create({
     color: "#259D8A",
     fontSize: 16,
     textAlign: "center",
-    textDecorationLine: "underline",
-  },
-  modalContainer: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "rgba(0, 0, 0, 0.5)", // Overlay background
-  },
-  modalContent: {
-    backgroundColor: "#fff",
-    padding: 20,
-    width: "80%",
-    borderRadius: 10,
-    alignItems: "center",
-  },
-  modalTitle: {
-    fontSize: 18,
-    fontWeight: "600",
-    marginBottom: 20,
-  },
-  timerText: {
-    fontSize: 16,
-    fontWeight: "400",
-    marginTop: 10,
-  },
-  resendText: {
-    color: "#259D8A",
-    fontSize: 16,
-    marginTop: 10,
     textDecorationLine: "underline",
   },
 });

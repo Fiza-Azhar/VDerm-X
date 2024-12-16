@@ -49,7 +49,7 @@ const LoginScreen = ({ navigation }: any) => {
     }
 
     // Simulate a login process (replace with your actual login logic)
-    if (email === "test@example.com" && password === "password123") {
+    if (email === "test.com" && password === "123") {
       // If login is successful, navigate to home screen
       navigation.navigate("Home");
     } else {
