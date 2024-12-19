@@ -92,6 +92,7 @@ export class ImageControllerr {
       limits: { fileSize: 10 * 1024 * 1024 }, // Max file size: 10MB
     }),
   )
+  
   async predict(@UploadedFile() file) {
     try {
       console.log("Received file:", file);  // Log the uploaded file
