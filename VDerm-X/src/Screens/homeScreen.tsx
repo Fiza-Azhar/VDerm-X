@@ -86,7 +86,10 @@ const HomeScreen = () => {
           <MaterialIcons name="pets" size={28} color="#A5A5A5" />
           <Text style={styles.navTextInactive}>Vets</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.navItem}>
+        <TouchableOpacity style={styles.navItem}
+          onPress={() => navigation.navigate("Diagnosis")} // Navigate to VetsScreen
+      
+        >
           <MaterialIcons name="healing" size={28} color="#A5A5A5" />
           <Text style={styles.navTextInactive}>Diagnosis</Text>
         </TouchableOpacity>

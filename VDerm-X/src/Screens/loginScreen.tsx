@@ -9,6 +9,7 @@ import {
   Image,
   Alert
 } from "react-native";
+import { BASE_URL } from "../config";
 
 const LoginScreen = ({ navigation }: any) => {
   const formOpacity = useRef(new Animated.Value(0)).current; // Fade-in animation for the form
@@ -40,22 +41,37 @@ const LoginScreen = ({ navigation }: any) => {
       ]),
     ]).start();
   }, []);
-
-  const handleLogin = () => {
-    // Here, you can call your API for authentication
+  const handleSubmit = async () => {
+    const userData = {
+        email,
+        password,
+    };
     if (email === "" || password === "") {
       Alert.alert("Error", "Please enter both email and password");
       return;
     }
 
-    // Simulate a login process (replace with your actual login logic)
-    if (email === "test.com" && password === "123") {
-      // If login is successful, navigate to home screen
-      navigation.navigate("Home");
-    } else {
-      Alert.alert("Invalid Credentials", "Please check your email and password");
+    try {
+        const response = await fetch(`${BASE_URL}/auth/login`, { // Updated endpoint
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(userData),
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+            // Navigate to HomePage on successful login
+            navigation.navigate("Home");
+        } else {
+            Alert.alert('Error', data.message);
+        }
+    } catch (error) {
+        Alert.alert('Error', 'Error during login');
     }
-  };
+};
 
   return (
     <View style={styles.container}>
@@ -97,7 +113,7 @@ const LoginScreen = ({ navigation }: any) => {
         />
 
         {/* Login Button */}
-        <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
+        <TouchableOpacity style={styles.loginButton} onPress={handleSubmit}>
           <Text style={styles.loginButtonText}>Login</Text>
         </TouchableOpacity>
 

@@ -8,6 +8,7 @@ import verifyScreen from './src/Screens/verifyScreen';
 import HomeScreen from './src/Screens/homeScreen';
 import RegisterScreen from './src/Screens/registerScreen'; // Assuming you will create this later
 import VetsScreen from './src/Screens/vetsScreen';
+import DiagnosticScreen from './src/Screens/diagnosticScreen';
 
 // Define the param list for all screens
 export type RootStackParamList = {
@@ -17,6 +18,7 @@ export type RootStackParamList = {
   Verify: undefined; 
   Home: undefined; 
   Vets: undefined; 
+  Diagnosis:undefined;
 };
 
 // Create a stack navigator
@@ -36,7 +38,7 @@ const App = () => {
         <Stack.Screen name="Verify" component={verifyScreen} options={{ headerShown: false }}/>
         <Stack.Screen name="Home" component={HomeScreen} options={{ headerShown: false }}/>
         <Stack.Screen name="Vets" component={VetsScreen} options={{ headerShown: false }}/>
-        
+        <Stack.Screen name='Diagnosis' component={DiagnosticScreen} options={{headerShown:false}}/>
       </Stack.Navigator>
     </NavigationContainer>
   );
