@@ -1,4 +1,3 @@
-// src/vets/vet.entity.ts
 import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
@@ -9,12 +8,14 @@ export class Vet {
   @Column()
   name: string;
 
-  @Column()
-  specialization: string;
+  @Column({ unique: true })
+  email: string;
 
-  
   @Column()
-  certificate:File;
+  qualification: string;
+
+  @Column()
+  certificate: string; // File path or URL to the certificate
 
   @Column()
   contact: string;
@@ -27,4 +28,7 @@ export class Vet {
 
   @Column({ nullable: true })
   imageUrl: string; // URL to vet's profile image
+
+  @Column({ default: false })
+  approveStatus: boolean; // Approval status
 }
