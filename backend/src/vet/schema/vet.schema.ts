@@ -4,8 +4,7 @@ export const VetSchema = new Schema({
   name: { type: String, required: true },
   email: { type: String, required: true, unique: true },
   qualification: { type: String, required: true },
-  certificate: { type: Buffer, required: true }, // Certificate stored as binary data
-  certificateType: { type: String, required: true }, // MIME type (e.g., 'application/pdf', 'image/png')
+  certificate: { type: String, required: true }, // MIME type (e.g., 'application/pdf', 'image/png')
   contact: { type: String, required: true },
   area: { type: String, required: true },
   availability: { type: String },
@@ -19,7 +18,6 @@ export interface Vet extends Document {
   email: string;
   qualification: string;
   certificate: Buffer;
-  certificateType: string;
   contact: string;
   area: string;
   availability?: string;

@@ -6,12 +6,16 @@ import {
   Delete,
   Param,
   Body,
-  UploadedFile,
+  UploadedFiles,
   UseInterceptors,
 } from '@nestjs/common';
-import { FileInterceptor } from '@nestjs/platform-express';
 import { VetService } from './vets.service';
 import { Vet } from './vet.entity';
+import { FileFieldsInterceptor } from '@nestjs/platform-express';
+
+
+
+
 
 @Controller('vets')
 export class VetController {
@@ -28,13 +32,26 @@ export class VetController {
   }
 
   @Post('createvets')
-  @UseInterceptors(FileInterceptor('certificate')) // Handle file upload
+  @UseInterceptors(
+    FileFieldsInterceptor([
+      { name: 'certificate', maxCount: 1 },
+      { name: 'imageUrl', maxCount: 1 },
+    ]),
+  )
   async create(
     @Body() vetData: Partial<Vet>,
-    @UploadedFile() certificate: Express.Multer.File, // Uploaded file
+    @UploadedFiles()
+    files: {
+      certificate?: Express.Multer.File[];
+      imageUrl?: Express.Multer.File[];
+    },
   ): Promise<Vet> {
-    return this.vetService.create(vetData, certificate);
+    const certificateFile = files.certificate?.[0];
+    const imageFile = files.imageUrl?.[0];
+  
+    return this.vetService.create(vetData, certificateFile, imageFile);
   }
+  
 
   @Put(':id')
   async update(@Param('id') id: string, @Body() updateData: Partial<Vet>): Promise<Vet> {
