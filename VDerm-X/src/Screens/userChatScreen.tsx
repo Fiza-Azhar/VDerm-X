@@ -119,7 +119,31 @@ const UserChatScreen: React.FC = ({ navigation }: any) => {
       />
 
 {/* Bottom Navigation */}
-
+<View style={styles.bottomNav}>
+        <TouchableOpacity style={styles.navItem} onPress={() => navigation.navigate("Home")}>
+          <Ionicons name="chatbubble-ellipses-outline" size={28} color="#259D8A" />
+          <Text style={styles.activeNav}>Chats</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.navItem}
+          onPress={() => navigation.navigate("Vets")} // Navigate to VetsScreen
+        >
+          <MaterialIcons name="pets" size={28} color="#A5A5A5" />
+          <Text style={styles.navText}>Vets</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.navItem}
+          onPress={() => navigation.navigate("Diagnosis")} // Navigate to VetsScreen
+          >
+          <MaterialIcons name="camera" size={28} color="#A5A5A5" />
+          <Text style={styles.navText}>Diagnosis</Text>
+        </TouchableOpacity>
+                <TouchableOpacity style={styles.navItem}
+                onPress={() => navigation.navigate('RedZone')}
+                >
+                  <MaterialIcons name="error" size={24} color="#A5A5A5" />
+                  <Text style={styles.navText}>Red Zones</Text>
+                </TouchableOpacity>
+      </View>
     </View>
   );
 };
