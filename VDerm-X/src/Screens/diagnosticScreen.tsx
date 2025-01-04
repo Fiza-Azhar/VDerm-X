@@ -99,7 +99,32 @@ const DiagnosticScreen = () => {
       </View>
 
       {/* Bottom Navigation */}
-
+      <View style={styles.bottomNav}>
+        <TouchableOpacity
+          style={styles.navItem}
+          onPress={() => navigation.navigate("Home")}
+        >
+          <Ionicons name="chatbubble-ellipses-outline" size={28} color="#A5A5A5" />
+          <Text style={styles.navTextInactive}>Chats</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.navItem}
+          onPress={() => navigation.navigate("Vets")}
+        >
+          <MaterialIcons name="pets" size={28} color="#A5A5A5" />
+          <Text style={styles.navTextInactive}>Vets</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.navItem}>
+          <MaterialIcons name="camera" size={28} color="#259D8A" />
+          <Text style={styles.navText}>Diagnosis</Text>
+        </TouchableOpacity>
+                <TouchableOpacity style={styles.navItem}
+               
+                >
+                  <Ionicons name="alert-circle-outline" size={24} color="#000" />
+                  <Text style={styles.navText}>Red Zones</Text>
+                </TouchableOpacity>
+      </View>
     </View>
   );
 };
