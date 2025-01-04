@@ -10,6 +10,7 @@ import RegisterScreen from './src/Screens/registerScreen'; // Assuming you will 
 import VetsScreen from './src/Screens/vetsScreen';
 import DiagnosticScreen from './src/Screens/diagnosticScreen';
 import BookAppointmentScreen from './src/Screens/bookAppointmentScreen';
+import UserChatScreen from './src/Screens/userChatScreen';
 
 
 // Define the param list for all screens
@@ -22,6 +23,7 @@ export type RootStackParamList = {
   Vets: undefined; 
   Diagnosis:undefined;
   BookAppointment: undefined;
+  UserChat: undefined;
 };
 
 // Create a stack navigator
@@ -43,6 +45,7 @@ const App = () => {
         <Stack.Screen name="Vets" component={VetsScreen} options={{ headerShown: false }}/>
         <Stack.Screen name='Diagnosis' component={DiagnosticScreen} options={{headerShown:false}}/>
         <Stack.Screen name='BookAppointment' component={BookAppointmentScreen} options={{headerShown:false}}/>
+        <Stack.Screen name='UserChat' component={UserChatScreen} options={{headerShown:false}}/>
       </Stack.Navigator>
     </NavigationContainer>
   );
