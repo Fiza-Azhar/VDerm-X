@@ -9,7 +9,7 @@ import {
   Image,
   Alert,
 } from "react-native";
-import { BASE_URL } from "../config";
+import { Picker } from '@react-native-picker/picker'; // Import Picker here
 
 const RegisterScreen = ({ navigation }: any) => {
   const formOpacity = useRef(new Animated.Value(0)).current;
@@ -19,6 +19,7 @@ const RegisterScreen = ({ navigation }: any) => {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [role, setRole] = useState("petOwner"); // New state for role selection
 
   useEffect(() => {
     Animated.sequence([
@@ -30,7 +31,7 @@ const RegisterScreen = ({ navigation }: any) => {
     ]).start();
   }, []);
 
-  const handleSignup = async () => {
+  const handleSignup = () => {
     if (!username || !email || !password) {
       Alert.alert("Error", "All fields are required.");
       return;
@@ -48,25 +49,12 @@ const RegisterScreen = ({ navigation }: any) => {
       return;
     }
 
-    try {
-      const response = await fetch(`${BASE_URL}/auth/signup`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ username, email, password }),
-      });
-
-      const data = await response.json();
-      if (response.status === 409) {
-        Alert.alert("Error", "Email already exists.");
-      } else if (response.ok) {
-        Alert.alert("Success", "Verification OTP sent. Check your email.");
-        navigation.navigate("Verify", { email });
-      } else {
-        Alert.alert("Error", data.message || "Failed to sign up.");
-      }
-    } catch (error) {
-      console.error("Signup error:", error);
-      Alert.alert("Error", "An error occurred during signup.");
+    if (role === "vet") {
+      navigation.navigate("VetForm");
+    } else {
+      // Simulate successful registration for pet owner
+      Alert.alert("Success", "Account created successfully!");
+      navigation.navigate("Login");
     }
   };
 
@@ -77,12 +65,24 @@ const RegisterScreen = ({ navigation }: any) => {
       </Animated.View>
 
       <Animated.View
-        style={[
-          styles.formContainer,
-          { opacity: formOpacity, transform: [{ translateY: formTranslateY }] },
-        ]}
+        style={[styles.formContainer, { opacity: formOpacity, transform: [{ translateY: formTranslateY }] }]}
       >
         <Text style={styles.title}>Create an Account</Text>
+
+        <Picker
+  selectedValue={role}
+  style={styles.input}
+  onValueChange={(itemValue) => {
+    setRole(itemValue);
+    if (itemValue === "vet") {
+      navigation.navigate("VetForm");
+    }
+  }}
+>
+  <Picker.Item label="Pet Owner" value="petOwner" />
+  <Picker.Item label="Vet" value="vet" />
+</Picker>
+
         <TextInput
           style={styles.input}
           placeholder="Username"
@@ -103,9 +103,11 @@ const RegisterScreen = ({ navigation }: any) => {
           value={password}
           onChangeText={setPassword}
         />
+
         <TouchableOpacity style={styles.registerButton} onPress={handleSignup}>
           <Text style={styles.registerButtonText}>Register</Text>
         </TouchableOpacity>
+
         <TouchableOpacity onPress={() => navigation.navigate("Login")}>
           <Text style={styles.loginText}>Already have an account? Login</Text>
         </TouchableOpacity>
