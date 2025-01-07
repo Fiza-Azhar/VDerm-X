@@ -119,7 +119,7 @@ const DiagnosticScreen = () => {
           <Text style={styles.navText}>Diagnosis</Text>
         </TouchableOpacity>
                 <TouchableOpacity style={styles.navItem}
-               
+  
                 >
                   <Ionicons name="alert-circle-outline" size={24} color="#000" />
                   <Text style={styles.navText}>Red Zones</Text>
