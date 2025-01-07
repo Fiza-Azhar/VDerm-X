@@ -11,6 +11,7 @@ import VetsScreen from './src/Screens/vetsScreen';
 import DiagnosticScreen from './src/Screens/diagnosticScreen';
 import BookAppointmentScreen from './src/Screens/bookAppointmentScreen';
 import UserChatScreen from './src/Screens/userChatScreen';
+import RedZoneScreen from './src/Screens/redZoneScreen';
 import VetFormScreen from './src/Screens/vetformScreen';
 
 
@@ -26,6 +27,7 @@ export type RootStackParamList = {
   BookAppointment: undefined;
   UserChat: undefined;
   VetForm: undefined;
+  RedZone: undefined;
 };
 
 // Create a stack navigator
@@ -49,6 +51,7 @@ const App = () => {
         <Stack.Screen name='BookAppointment' component={BookAppointmentScreen} options={{headerShown:false}}/>
         <Stack.Screen name='UserChat' component={UserChatScreen} options={{headerShown:false}}/>
         <Stack.Screen name='VetForm' component={VetFormScreen} options={{headerShown:false}}/>
+        <Stack.Screen name='RedZone' component={RedZoneScreen} options={{headerShown:false}}/>
       </Stack.Navigator>
     </NavigationContainer>
   );
