@@ -45,6 +45,27 @@ const RedZoneScreen = ({ navigation }: { navigation: any }) => {
         <Marker coordinate={{ latitude: 37.79025, longitude: -122.4344 }} title="Red Zone 3" />
       </MapView>
  {/* Footer Navigation */}
+ <View style={styles.footer}>
+        <TouchableOpacity style={styles.navItem}
+        onPress={() => navigation.navigate('VetHome')}
+        >
+          <Ionicons name="chatbubble-outline" size={24} color="#000" />
+          <Text style={styles.navText}>Chats</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.navItem}
+          onPress={() => navigation.navigate('VetSchedule')}
+        >
+          <Ionicons name="calendar-outline" size={24} color="#000" />
+          <Text style={styles.navText}>My Schedule</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.navItem}
+        onPress={() => navigation.navigate('RedZone')}
+        >
+          <Ionicons name="alert-circle-outline" size={24} color="#000" />
+          <Text style={styles.navText}>Red Zones</Text>
+        </TouchableOpacity>
+      </View>
 
     </View>
   );
