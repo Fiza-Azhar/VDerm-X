@@ -29,7 +29,11 @@ const VetsScreen = ({ navigation }: { navigation: any }) => {
   );
 
   const renderVet = ({ item }: { item: any }) => (
-    <TouchableOpacity style={styles.vetItem}>
+    <TouchableOpacity style={styles.vetItem}
+    onPress={() => {
+      navigation.navigate("UserAppointment");
+    }}
+    >
       <Image source={{ uri: item.avatar }} style={styles.avatar} />
       <Text style={styles.vetName}>{item.name}</Text>
       <Ionicons name="chevron-forward" size={20} color="#888" />
@@ -75,12 +79,20 @@ const VetsScreen = ({ navigation }: { navigation: any }) => {
           onPress={() => navigation.navigate("Vets")} // Navigate to VetsScreen
         >
           <MaterialIcons name="pets" size={28} color="#259D8A" />
-          <Text style={styles.navText}>Vets</Text>
+          <Text style={styles.activeNav}>Vets</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.navItem}>
-          <MaterialIcons name="healing" size={28} color="#A5A5A5" />
-          <Text style={styles.navTextInactive}>Diagnosis</Text>
+        <TouchableOpacity style={styles.navItem}
+          onPress={() => navigation.navigate("Diagnosis")} // Navigate to VetsScreen
+          >
+          <MaterialIcons name="camera" size={28} color="#A5A5A5" />
+          <Text style={styles.navText}>Diagnosis</Text>
         </TouchableOpacity>
+                <TouchableOpacity style={styles.navItem}
+                onPress={() => navigation.navigate('RedZone')}
+                >
+                  <MaterialIcons name="error" size={24} color="#A5A5A5" />
+                  <Text style={styles.navText}>Red Zones</Text>
+                </TouchableOpacity>
       </View>
     </View>
   );
@@ -170,6 +182,11 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   navText: {
+    fontSize: 12,
+    color: "#A5A5A5",
+    marginTop: 5,
+  },
+  activeNav:{
     fontSize: 12,
     color: "#259D8A",
     marginTop: 5,
