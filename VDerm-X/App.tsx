@@ -13,6 +13,7 @@ import BookAppointmentScreen from './src/Screens/bookAppointmentScreen';
 import UserChatScreen from './src/Screens/userChatScreen';
 import RedZoneScreen from './src/Screens/redZoneScreen';
 import VetFormScreen from './src/Screens/vetformScreen';
+import VetHomeScreen from './src/Screens/vetHomeScreen';
 
 
 // Define the param list for all screens
@@ -28,6 +29,7 @@ export type RootStackParamList = {
   UserChat: undefined;
   VetForm: undefined;
   RedZone: undefined;
+  VetHome: undefined;
 };
 
 // Create a stack navigator
@@ -52,6 +54,7 @@ const App = () => {
         <Stack.Screen name='UserChat' component={UserChatScreen} options={{headerShown:false}}/>
         <Stack.Screen name='VetForm' component={VetFormScreen} options={{headerShown:false}}/>
         <Stack.Screen name='RedZone' component={RedZoneScreen} options={{headerShown:false}}/>
+        <Stack.Screen name='VetHome' component={VetHomeScreen} options={{headerShown:false}}/>
       </Stack.Navigator>
     </NavigationContainer>
   );
