@@ -10,6 +10,7 @@ import {
   Alert,
 } from "react-native";
 import { Picker } from '@react-native-picker/picker'; // Import Picker here
+import { BASE_URL } from "../config";
 
 const RegisterScreen = ({ navigation }: any) => {
   const formOpacity = useRef(new Animated.Value(0)).current;
@@ -31,7 +32,7 @@ const RegisterScreen = ({ navigation }: any) => {
     ]).start();
   }, []);
 
-  const handleSignup = () => {
+  const handleSignup = async () => {
     if (!username || !email || !password) {
       Alert.alert("Error", "All fields are required.");
       return;
@@ -53,8 +54,26 @@ const RegisterScreen = ({ navigation }: any) => {
       navigation.navigate("VetForm");
     } else {
       // Simulate successful registration for pet owner
-      Alert.alert("Success", "Account created successfully!");
-      navigation.navigate("Login");
+      try {
+        const response = await fetch(`${BASE_URL}/auth/signup`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ username, email, password }),
+        });
+  
+        const data = await response.json();
+        if (response.status === 409) {
+          Alert.alert("Error", "Email already exists.");
+        } else if (response.ok) {
+          Alert.alert("Success", "Verification OTP sent. Check your email.");
+          navigation.navigate("Verify", { email });
+        } else {
+          Alert.alert("Error", data.message || "Failed to sign up.");
+        }
+      } catch (error) {
+        console.error("Signup error:", error);
+        Alert.alert("Error", "An error occurred during signup.");
+      }
     }
   };
 

@@ -14,6 +14,7 @@ import { Ionicons, MaterialIcons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import type { StackNavigationProp } from "@react-navigation/stack";
 import type { RootStackParamList } from "../../App";
+import { BASE_URL } from "../config";
 
 const DiagnosticScreen = () => {
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
@@ -22,6 +23,7 @@ const DiagnosticScreen = () => {
 
   const handleImagePick = async (type: "camera" | "gallery") => {
     try {
+      // Request permissions if not already granted
       const cameraPermission = await ImagePicker.requestCameraPermissionsAsync();
       const libraryPermission = await ImagePicker.requestMediaLibraryPermissionsAsync();
 
@@ -33,22 +35,59 @@ const DiagnosticScreen = () => {
       let result;
       if (type === "camera") {
         result = await ImagePicker.launchCameraAsync({
-          mediaTypes: ImagePicker.MediaTypeOptions.Images,
-          quality: 0.8,
+          mediaTypes: ImagePicker.MediaTypeOptions.Images, // Using the valid `MediaTypeOptions.Images`
+          quality: 0.8, // Sets the image quality
         });
       } else {
         result = await ImagePicker.launchImageLibraryAsync({
           mediaTypes: ImagePicker.MediaTypeOptions.Images,
-          quality: 0.8,
+          quality: 0.8, // Sets the image quality
         });
       }
 
       if (!result.canceled) {
+        // Normalize the URI for consistency
         setSelectedImage(result.assets[0].uri);
       }
     } catch (error) {
       Alert.alert("Error", "An unexpected error occurred while selecting the image.");
       console.error(error);
+    }
+  };
+
+  const uploadImageToAPI = async () => {
+    if (!selectedImage) {
+      Alert.alert("Error", "Please select an image first!");
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append("image", {
+      uri: selectedImage,
+      name: "image.jpg", // Modify if necessary
+      type: "image/jpeg",
+    } as any);
+
+    setLoading(true); // Set loading to true when upload starts
+
+    try {
+      const response = await fetch(`${BASE_URL}/images/predicts`, {
+        method: 'POST',
+        body: formData, // Don't stringify FormData
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        Alert.alert("Success", JSON.stringify(data)); // Display the response data
+      } else {
+        Alert.alert("Error", data.message || "An error occurred.");
+      }
+    } catch (error) {
+      Alert.alert("Error", "Failed to upload the image.");
+      console.error(error);
+    } finally {
+      setLoading(false); // Set loading to false when the upload completes
     }
   };
 
@@ -89,9 +128,7 @@ const DiagnosticScreen = () => {
         ) : (
           <TouchableOpacity
             style={styles.uploadButton}
-            onPress={() =>
-              Alert.alert("Upload Image", "Backend functionality is commented out.")
-            }
+            onPress={uploadImageToAPI}
           >
             <Text style={styles.uploadButtonText}>Upload Image</Text>
           </TouchableOpacity>
