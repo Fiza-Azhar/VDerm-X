@@ -5,8 +5,3 @@ import { ImageControllerr } from './image.controller';
    controllers: [ImageControllerr],
 })
 export class ImageModulee {}
-
-
-
-
-

@@ -75,6 +75,9 @@ import { exec } from 'child_process';
 import * as fs from 'fs';
 import * as path from 'path';
 import * as os from 'os';  // For creating temporary files
+
+
+
 @Controller('images')
 export class ImageControllerr {
   @Post('predicts')
@@ -89,7 +92,7 @@ export class ImageControllerr {
       limits: { fileSize: 10 * 1024 * 1024 }, // Max file size: 10MB
     }),
   )
-
+  
   async predict(@UploadedFile() file) {
     try {
       console.log("Received file:", file);  // Log the uploaded file
