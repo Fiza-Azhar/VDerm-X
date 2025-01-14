@@ -8,6 +8,7 @@ import { VetModule } from './vet/vets.module';
 import * as dotenv from 'dotenv';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import path, { join } from 'path';
+
 dotenv.config();
 
 
@@ -19,6 +20,7 @@ dotenv.config();
       rootPath: path.join(__dirname, 'uploads'), // Path where files are stored (relative to the current directory)
       serveRoot: '/uploads', // URL prefix for accessing the files
     }),
+
     UserModule,
     //ImageModule,
     ImageModulee,

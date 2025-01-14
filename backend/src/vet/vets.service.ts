@@ -1,8 +1,10 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+
+import { NotFoundException } from '@nestjs/common';
+// src/vets/vet.service.ts
+import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Vet } from './vet.entity';
-
 @Injectable()
 export class VetService {
   constructor(@InjectModel('Vet') private readonly vetModel: Model<Vet>) {}
@@ -10,7 +12,6 @@ export class VetService {
   async findAll(): Promise<Vet[]> {
     return this.vetModel.find().exec();
   }
-
   
   async findOne(id: string): Promise<Vet> {
     const vet = await this.vetModel.findById(id).exec();
@@ -59,5 +60,4 @@ export class VetService {
       await vet.save(); // Save changes to the database
       return vet;
     }
-    
 }
