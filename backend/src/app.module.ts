@@ -1,30 +1,18 @@
-// src/app.module.ts
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
-import { UserModule } from './user/user.module';
-import { ImageModule } from './model/image.module';
-import { ImageModulee } from './image/image.module';
+import { ConfigModule } from '@nestjs/config';
 import { VetModule } from './vet/vets.module';
-import * as dotenv from 'dotenv';
-import { ServeStaticModule } from '@nestjs/serve-static';
-import path, { join } from 'path';
-
-dotenv.config();
+import { UserModule } from './user/user.module';
+import { ImageModulee } from './image/image.module';
 
 
 @Module({
   imports: [
-    // Connect to MongoDB
-    MongooseModule.forRoot(process.env.MONGODB_URI), // Replace with your MongoDB URL if different
-    ServeStaticModule.forRoot({
-      rootPath: path.join(__dirname, 'uploads'), // Path where files are stored (relative to the current directory)
-      serveRoot: '/uploads', // URL prefix for accessing the files
-    }),
-
-    UserModule,
-    //ImageModule,
-    ImageModulee,
+    ConfigModule.forRoot(),
+    MongooseModule.forRoot('mongodb://localhost:27017/fypcollection'),
     VetModule,
+    UserModule,
+    ImageModulee
   ],
 })
 export class AppModule {}
