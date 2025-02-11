@@ -16,6 +16,8 @@ import VetFormScreen from './src/Screens/vetformScreen';
 import VetHomeScreen from './src/Screens/vetHomeScreen';
 import VetAppointmentScreen from './src/Screens/vetAppointmentScreen';
 import VetScheduleScreen from './src/Screens/vetScheduleScreen';
+import VetDetailScreen from './src/Screens/VetDetailScreen ';
+import ChatbotScreen from './src/Screens/ChatbotScreen';
 
 
 // Define the param list for all screens
@@ -34,6 +36,8 @@ export type RootStackParamList = {
   VetHome: undefined;
   VetSchedule: undefined;
   VetAppointment: undefined;
+  VetDetail:undefined;
+  Chatbot:undefined;
 };
 
 // Create a stack navigator
@@ -61,6 +65,9 @@ const App = () => {
         <Stack.Screen name='VetSchedule' component={VetScheduleScreen} options={{headerShown:false}}/>
         <Stack.Screen name='VetAppointment' component={VetAppointmentScreen} options={{headerShown:false}}/>
         <Stack.Screen name='VetHome' component={VetHomeScreen} options={{headerShown:false}}/>
+        <Stack.Screen name="VetDetail" component={VetDetailScreen} options={{headerShown:false}}/>
+        <Stack.Screen name="Chatbot" component={ChatbotScreen} />
+
       </Stack.Navigator>
     </NavigationContainer>
   );

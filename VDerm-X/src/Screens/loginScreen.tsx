@@ -64,7 +64,7 @@ const LoginScreen = ({ navigation }: any) => {
 
       if (response.ok) {
           // Navigate to HomePage on successful login
-          navigation.navigate("Home");
+          navigation.navigate("Home", { email: data.email });
       } else {
           Alert.alert('Error', data.message);
       }

@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, Platform, TouchableOpacity } from 'react-native';
 import MapView, { Marker } from 'react-native-maps';
-import { Ionicons } from '@expo/vector-icons';
+import { Ionicons, MaterialIcons } from '@expo/vector-icons';
 import * as Location from 'expo-location'; // To get user location, if needed.
+import UBottomTabBar from './UBottomTabBar';
 
 const RedZoneScreen = ({ navigation }: { navigation: any }) => {
   const [userLocation, setUserLocation] = useState<{ latitude: number; longitude: number } | null>(null);
@@ -15,7 +16,7 @@ const RedZoneScreen = ({ navigation }: { navigation: any }) => {
         console.log('Permission to access location was denied');
         return;
       }
-      
+
       const location = await Location.getCurrentPositionAsync({});
       setUserLocation({
         latitude: location.coords.latitude,
@@ -44,28 +45,10 @@ const RedZoneScreen = ({ navigation }: { navigation: any }) => {
         <Marker coordinate={{ latitude: 37.78925, longitude: -122.4334 }} title="Red Zone 2" />
         <Marker coordinate={{ latitude: 37.79025, longitude: -122.4344 }} title="Red Zone 3" />
       </MapView>
- {/* Footer Navigation */}
- <View style={styles.footer}>
-        <TouchableOpacity style={styles.navItem}
-        onPress={() => navigation.navigate('VetHome')}
-        >
-          <Ionicons name="chatbubble-outline" size={24} color="#000" />
-          <Text style={styles.navText}>Chats</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.navItem}
-          onPress={() => navigation.navigate('VetSchedule')}
-        >
-          <Ionicons name="calendar-outline" size={24} color="#000" />
-          <Text style={styles.navText}>My Schedule</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.navItem}
-        onPress={() => navigation.navigate('RedZone')}
-        >
-          <Ionicons name="alert-circle-outline" size={24} color="#000" />
-          <Text style={styles.navText}>Red Zones</Text>
-        </TouchableOpacity>
-      </View>
+      {/* Footer Navigation */}
+
+      <UBottomTabBar />
+
 
     </View>
   );
@@ -100,6 +83,11 @@ const styles = StyleSheet.create({
     fontSize: 12,
     marginTop: 4,
     color: '#000',
+  },
+  navTextInactive: {
+    fontSize: 12,
+    color: "#A5A5A5",
+    marginTop: 5,
   },
 });
 

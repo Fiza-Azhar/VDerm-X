@@ -15,6 +15,9 @@ import { useNavigation } from "@react-navigation/native";
 import type { StackNavigationProp } from "@react-navigation/stack";
 import type { RootStackParamList } from "../../App";
 import { BASE_URL } from "../config";
+import * as Location from 'expo-location'; // To get user location, if needed.
+import UBottomTabBar from "./UBottomTabBar";
+
 
 const DiagnosticScreen = () => {
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
@@ -79,7 +82,32 @@ const DiagnosticScreen = () => {
       const data = await response.json();
 
       if (response.ok) {
-        Alert.alert("Success", JSON.stringify(data)); // Display the response data
+        Alert.alert(
+          "Allow Location Access",
+          "Do you want to mark this location as a Red Zone?",
+          [
+            {
+              text: "Cancel",
+              style: "cancel",
+            },
+            {
+              text: "Allow",
+              onPress: async () => {
+                let { status } = await Location.requestForegroundPermissionsAsync();
+                if (status !== 'granted') {
+                  Alert.alert("Permission Denied", "Location access is required to mark the Red Zone.");
+                  return;
+                }
+
+                const location = await Location.getCurrentPositionAsync({});
+                const { latitude, longitude } = location.coords;
+
+                // Navigate to RedZone screen with location
+                navigation.navigate("RedZone");
+              },
+            },
+          ]
+        );
       } else {
         Alert.alert("Error", data.message || "An error occurred.");
       }
@@ -136,32 +164,8 @@ const DiagnosticScreen = () => {
       </View>
 
       {/* Bottom Navigation */}
-      <View style={styles.bottomNav}>
-        <TouchableOpacity
-          style={styles.navItem}
-          onPress={() => navigation.navigate("Home")}
-        >
-          <Ionicons name="chatbubble-ellipses-outline" size={28} color="#A5A5A5" />
-          <Text style={styles.navTextInactive}>Chats</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.navItem}
-          onPress={() => navigation.navigate("Vets")}
-        >
-          <MaterialIcons name="pets" size={28} color="#A5A5A5" />
-          <Text style={styles.navTextInactive}>Vets</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.navItem}>
-          <MaterialIcons name="camera" size={28} color="#259D8A" />
-          <Text style={styles.navText}>Diagnosis</Text>
-        </TouchableOpacity>
-                <TouchableOpacity style={styles.navItem}
-                onPress={() => navigation.navigate('RedZone')}
-                >
-                  <Ionicons name="alert-circle-outline" size={24} color="#000" />
-                  <Text style={styles.navText}>Red Zones</Text>
-                </TouchableOpacity>
-      </View>
+      <UBottomTabBar />
+
     </View>
   );
 };
@@ -190,7 +194,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     justifyContent: "center",
     alignItems: "center",
-    
+
   },
   profileInitial: {
     color: "#fff",
@@ -215,7 +219,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
     color: "#555",
     marginTop: 10,
-  
+
   },
   actionButton: {
     flexDirection: "row",

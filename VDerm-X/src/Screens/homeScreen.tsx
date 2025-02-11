@@ -1,9 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import {
   View,
   Text,
   StyleSheet,
   TextInput,
+  ScrollView,
   TouchableOpacity,
   Image,
 } from "react-native";
@@ -11,12 +12,42 @@ import { Ionicons, MaterialIcons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import type { StackNavigationProp } from "@react-navigation/stack";
 import type { RootStackParamList } from "../../App";
+import UBottomTabBar from "./UBottomTabBar";
+const RASA_SERVER_URL = "https://adab-35-203-132-100.ngrok-free.app/webhooks/rest/webhook"; // Update this with your actual Rasa server URL
 
-const HomeScreen = () => {
-  const [activeTab, setActiveTab] = useState("Chats");
+const HomeScreen = ({ route }: { route: any }) => {
+  const [messages, setMessages] = useState<{ sender: string; text: string }[]>([]);
+  const [input, setInput] = useState("");
   const navigation = useNavigation<StackNavigationProp<RootStackParamList, "Home">>();
 
+  // Function to send message to Rasa
+  const sendMessage = async () => {
+    if (!input.trim()) return;
+
+    const userMessage = { sender: "user", text: input };
+    setMessages((prevMessages) => [...prevMessages, userMessage]);
+
+    try {
+      const response = await fetch(RASA_SERVER_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ sender: "user", message: input }),
+      });
+
+      const data = await response.json();
+      if (data && data.length > 0) {
+        setMessages((prevMessages) => [...prevMessages, userMessage, { sender: "bot", text: data[1]?.text || "No response" }]);
+      }
+    } catch (error) {
+      console.error("Error sending message:", error);
+    }
+
+    setInput("");
+  };
+
   return (
+
+
     <View style={styles.container}>
       {/* Header Section */}
       <View style={styles.header}>
@@ -24,77 +55,48 @@ const HomeScreen = () => {
           <Text style={styles.profileInitial}>J</Text>
         </View>
         <Image
-          source={require("../Assets/logo.png")} // Replace with your logo path
+          source={require("../Assets/logo.png")}
           style={styles.logo}
         />
       </View>
-
-      {/* Tab Navigation */}
-      <View style={styles.tabContainer}>
-        <TouchableOpacity
-          style={[styles.tab, activeTab === "Chats" && styles.activeTab]}
-          onPress={() => setActiveTab("Chats")}
-        >
-          <Text
-            style={[styles.tabText, activeTab === "Chats" && styles.activeTabText]}
-          >
-            Chats
-          </Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={[styles.tab, activeTab === "Appointments" && styles.activeTab]}
-          onPress={() => setActiveTab("Appointments")}
-        >
-          <Text
-            style={[
-              styles.tabText,
-              activeTab === "Appointments" && styles.activeTabText,
-            ]}
-          >
-            Appointments
-          </Text>
-        </TouchableOpacity>
-      </View>
-
-      {/* Main Content */}
-      <View style={styles.content}>
+      {/* Chat Messages */}
+      <ScrollView style={styles.chatContainer}>
         <Text style={styles.instructions}>
-          Start a new chat here{"\n"}Ask anything about your pet
+          {"Ask anything about your pet 🐾"}
         </Text>
-        <View style={styles.searchContainer}>
-          <TextInput
-            style={styles.searchInput}
-            placeholder="Ask here"
-            placeholderTextColor="#A3D7D5"
-          />
-          <TouchableOpacity style={styles.searchButton}>
-            <Ionicons name="search" size={24} color="#fff" />
-          </TouchableOpacity>
-        </View>
+        {messages.map((msg, index) => (
+          <View key={index} style={msg.sender === "user" ? styles.userMessageContainer : styles.botMessageContainer}>
+            <Text style={msg.sender === "user" ? styles.userMessage : styles.botMessage}>{msg.text}</Text>
+          </View>
+        ))}
+      </ScrollView>
+
+      {/* Input Field & Send Button 
+          <View style={styles.inputContainer}>
+            <TextInput style={styles.input} value={input} onChangeText={setInput} placeholder="Type a message..." />
+            <TouchableOpacity style={styles.sendButton} onPress={sendMessage}>
+              <Text style={styles.sendButtonText}>Send</Text>
+            </TouchableOpacity>
+          </View>*/}
+
+      {/* Chat Input */}
+      <View style={styles.searchContainer}>
+        <TextInput
+          style={styles.searchInput}
+          value={input}
+          onChangeText={setInput}
+          placeholder="Type your question..."
+          placeholderTextColor="#000"
+        />
+        <TouchableOpacity style={styles.searchButton} onPress={sendMessage}>
+          <Ionicons name="send" size={20} color="#fff" />
+        </TouchableOpacity>
       </View>
 
-      {/* Bottom Navigation */}
-      <View style={styles.bottomNav}>
-        <TouchableOpacity style={styles.navItem}>
-          <Ionicons name="chatbubble-ellipses-outline" size={28} color="#259D8A" />
-          <Text style={styles.navText}>Chats</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.navItem}
-          onPress={() => navigation.navigate("Vets")} // Navigate to VetsScreen
-        >
-          <MaterialIcons name="pets" size={28} color="#A5A5A5" />
-          <Text style={styles.navTextInactive}>Vets</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.navItem}
-          onPress={() => navigation.navigate("Diagnosis")} // Navigate to VetsScreen
-      
-        >
-          <MaterialIcons name="healing" size={28} color="#A5A5A5" />
-          <Text style={styles.navTextInactive}>Diagnosis</Text>
-        </TouchableOpacity>
-      </View>
+      {/* Bottom Navigation Bar (Kept as it is) */}
+      <UBottomTabBar />
     </View>
+
   );
 };
 
@@ -121,7 +123,6 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     justifyContent: "center",
     alignItems: "center",
-    
   },
   profileInitial: {
     color: "#fff",
@@ -131,33 +132,9 @@ const styles = StyleSheet.create({
   logo: {
     width: 100,
     marginTop: 40,
-    marginRight: 110,
+    marginRight: 120,
     height: 40,
     resizeMode: "contain",
-  },
-  tabContainer: {
-    flexDirection: "row",
-    justifyContent: "space-evenly",
-    backgroundColor: "#fff",
-    marginTop: 10,
-    elevation: 2,
-  },
-  tab: {
-    paddingVertical: 12,
-    width: "50%",
-    alignItems: "center",
-  },
-  activeTab: {
-    borderBottomWidth: 2,
-    borderBottomColor: "#259D8A",
-  },
-  tabText: {
-    fontSize: 16,
-    color: "#A5A5A5",
-  },
-  activeTabText: {
-    color: "#259D8A",
-    fontWeight: "600",
   },
   content: {
     flex: 1,
@@ -169,7 +146,9 @@ const styles = StyleSheet.create({
     fontSize: 16,
     textAlign: "center",
     color: "#555",
+    marginTop: 20,
     marginBottom: 20,
+
   },
   searchContainer: {
     flexDirection: "row",
@@ -178,17 +157,17 @@ const styles = StyleSheet.create({
     backgroundColor: "#A3D7D5",
     borderRadius: 25,
     paddingHorizontal: 15,
+    marginBottom: 10
   },
   searchInput: {
     flex: 1,
     height: 50,
-    color: "#fff",
     fontSize: 16,
+    color: "#333",
   },
   searchButton: {
     backgroundColor: "#259D8A",
-    padding: 5,
-    marginRight: 0,
+    padding: 10,
     borderRadius: 25,
   },
   bottomNav: {
@@ -206,7 +185,7 @@ const styles = StyleSheet.create({
   },
   navText: {
     fontSize: 12,
-    color: "#259D8A",
+    color: "#A5A5A5",
     marginTop: 5,
   },
   navTextInactive: {
@@ -214,6 +193,41 @@ const styles = StyleSheet.create({
     color: "#A5A5A5",
     marginTop: 5,
   },
+  chatContainer: {
+    width: "100%",
+    marginBottom: 20,
+  },
+  userMessage: {
+    alignSelf: "flex-end",
+    backgroundColor: "#DCF8C6",
+    padding: 10,
+    borderRadius: 10,
+    marginBottom: 8,
+    maxWidth: "75%",
+  },
+  botMessage: {
+    alignSelf: "flex-start",
+    backgroundColor: "#E8E8E8",
+    padding: 10,
+    borderRadius: 10,
+    marginBottom: 8,
+    maxWidth: "75%",
+  },
+  messageText: {
+    fontSize: 16,
+    color: "#333",
+  },
+  activeNav: {
+    fontSize: 12,
+    color: "#A5A5A5",
+    marginTop: 5,
+  },
+  userMessageContainer: { alignSelf: "flex-end", backgroundColor: "#DCF8C6", padding: 8, borderRadius: 8, marginVertical: 2, maxWidth: "75%" },
+  botMessageContainer: { alignSelf: "flex-start", backgroundColor: "#E5E5EA", padding: 8, borderRadius: 8, marginVertical: 2, maxWidth: "75%" },
+  inputContainer: { flexDirection: "row", alignItems: "center", padding: 5 },
+  input: { flex: 1, borderWidth: 1, borderColor: "#ccc", padding: 10, borderRadius: 5, backgroundColor: "#FFF" },
+  sendButton: { marginLeft: 10, backgroundColor: "#007AFF", paddingVertical: 10, paddingHorizontal: 15, borderRadius: 5 },
+  sendButtonText: { color: "#FFF", fontWeight: "bold" },
 });
 
 export default HomeScreen;

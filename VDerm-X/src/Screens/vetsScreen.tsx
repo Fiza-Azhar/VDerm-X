@@ -213,6 +213,7 @@ import {
 import { Ionicons, MaterialIcons } from "@expo/vector-icons";
 import axios from "axios";
 import { BASE_URL } from "../config";
+import UBottomTabBar from "./UBottomTabBar";
 
 // Define the interface for the vet object
 interface Vet {
@@ -257,11 +258,11 @@ const VetsScreen = ({ navigation }: { navigation: any }) => {
 
   const renderVet = ({ item }: { item: Vet }) => (
     <TouchableOpacity
-      style={styles.vetItem}
-      onPress={() => {
-        navigation.navigate("UserAppointment");
-      }}
-    >
+    style={styles.vetItem}
+    onPress={() => {
+      navigation.navigate("VetDetail", { vet: item });
+    }}
+  >  
       <Image source={{ uri: item.imageUrl }} style={styles.avatar} />
       <View style={styles.vetDetails}>
         <Text style={styles.vetName}>{item.name}</Text>
@@ -305,33 +306,8 @@ const VetsScreen = ({ navigation }: { navigation: any }) => {
       )}
 
       {/* Bottom Navigation */}
-      <View style={styles.bottomNav}>
-        <TouchableOpacity style={styles.navItem} onPress={() => navigation.navigate("Home")}>
-          <Ionicons name="chatbubble-ellipses-outline" size={28} color="#A5A5A5" />
-          <Text style={styles.navText}>Chats</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.navItem}
-          onPress={() => navigation.navigate("Vets")} // Navigate to VetsScreen
-        >
-          <MaterialIcons name="pets" size={28} color="#259D8A" />
-          <Text style={styles.activeNav}>Vets</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.navItem}
-          onPress={() => navigation.navigate("Diagnosis")} // Navigate to Diagnosis
-        >
-          <MaterialIcons name="camera" size={28} color="#A5A5A5" />
-          <Text style={styles.navText}>Diagnosis</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.navItem}
-          onPress={() => navigation.navigate("RedZone")} // Navigate to RedZones
-        >
-          <MaterialIcons name="error" size={24} color="#A5A5A5" />
-          <Text style={styles.navText}>Red Zones</Text>
-        </TouchableOpacity>
-      </View>
+      <UBottomTabBar />
+
     </View>
   );
 };
