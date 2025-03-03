@@ -11,6 +11,7 @@ import {
 } from "react-native";
 import { Picker } from '@react-native-picker/picker'; // Import Picker here
 import { BASE_URL } from "../config";
+import { Ionicons } from "@expo/vector-icons";
 
 const RegisterScreen = ({ navigation }: any) => {
   const formOpacity = useRef(new Animated.Value(0)).current;
@@ -20,7 +21,16 @@ const RegisterScreen = ({ navigation }: any) => {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [role, setRole] = useState("petOwner"); // New state for role selection
+  const [isFocused, setIsFocused] = useState(false); // Track input focus
+  const passwordRules = [
+    { label: "At least 8 characters", regex: /.{8,}/ },
+    { label: "At least one uppercase letter", regex: /[A-Z]/ },
+    { label: "At least one lowercase letter", regex: /[a-z]/ },
+    { label: "At least one number", regex: /\d/ },
+    { label: "At least one special character (@$!%*?&)", regex: /[@$!%*?&]/ },
+  ];
 
   useEffect(() => {
     Animated.sequence([
@@ -46,9 +56,13 @@ const RegisterScreen = ({ navigation }: any) => {
 
     const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
     if (!passwordRegex.test(password)) {
-      Alert.alert("Error", "Password must meet the complexity requirements.");
+      Alert.alert(
+        "Invalid Password",
+        "Password must be at least 8 characters long and include:\n• At least one uppercase letter\n• At least one lowercase letter\n• At least one number\n• At least one special character (@$!%*?&)"
+      );
       return;
     }
+    
 
     if (role === "vet") {
       navigation.navigate("VetForm");
@@ -115,13 +129,38 @@ const RegisterScreen = ({ navigation }: any) => {
           value={email}
           onChangeText={setEmail}
         />
-        <TextInput
-          style={styles.input}
-          placeholder="Password"
-          secureTextEntry
-          value={password}
-          onChangeText={setPassword}
-        />
+        {/* Password Field with Eye Icon */}
+        <View style={styles.passwordContainer}>
+          <TextInput
+            style={styles.passwordInput}
+            placeholder="Password"
+            secureTextEntry={!showPassword} // Toggle visibility
+            value={password}
+            onChangeText={setPassword}
+            onFocus={() => setIsFocused(true)} // Show rules when focused
+            onBlur={() => setIsFocused(false)} // Hide rules when unfocused
+          />
+          <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
+            <Ionicons name={showPassword ? "eye" : "eye-off"} size={24} color="gray" />
+          </TouchableOpacity>
+        </View>
+
+ {/* Show Password Rules Only When Focused */}
+ {isFocused && (
+        <View style={styles.passwordStrengthContainer}>
+          {passwordRules.map((rule, index) => (
+            <Text
+              key={index}
+              style={[
+                styles.passwordRule,
+                { color: rule.regex.test(password) ? "green" : "red" },
+              ]}
+            >
+              {rule.regex.test(password) ? "✔" : "✘"} {rule.label}
+            </Text>
+          ))}
+        </View>
+      )}
 
         <TouchableOpacity style={styles.registerButton} onPress={handleSignup}>
           <Text style={styles.registerButtonText}>Register</Text>
@@ -145,6 +184,22 @@ const styles = StyleSheet.create({
   registerButton: { backgroundColor: "#259D8A", paddingVertical: 15, borderRadius: 8, alignItems: "center" },
   registerButtonText: { color: "#FFFFFF", fontSize: 18, fontWeight: "600" },
   loginText: { marginTop: 15, color: "#259D8A", fontSize: 16, textAlign: "center", textDecorationLine: "underline" },
+  passwordStrengthContainer: {
+    marginTop: 5,
+  },
+  passwordRule: {
+    fontSize: 14,
+    marginVertical: 2,
+  },
+  passwordContainer: { 
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#F2F2F2",
+    borderRadius: 8,
+    paddingHorizontal: 15,
+    marginBottom: 15,
+  },
+  passwordInput: { flex: 1, height: 50 },
 });
 
 export default RegisterScreen;

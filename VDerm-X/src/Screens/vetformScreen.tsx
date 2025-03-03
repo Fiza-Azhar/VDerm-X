@@ -161,6 +161,9 @@ import {
 } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 import { BASE_URL } from "../config";
+import { Picker } from "@react-native-picker/picker";
+import CountryPicker, { Country, CountryCode } from "react-native-country-picker-modal";
+import { Ionicons } from "@expo/vector-icons";
 
 const VetFormScreen = ({ navigation }: any) => {
   const formOpacity = useRef(new Animated.Value(0)).current;
@@ -176,19 +179,37 @@ const VetFormScreen = ({ navigation }: any) => {
   const [availability, setAvailability] = useState("");
   const [imageurl, setProfileImage] = useState<any>(null);
   const [certificate, setCertificate] = useState<any>(null);
+  const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false); // New state for loading
+
+  const [countryCode, setCountryCode] = useState<CountryCode>("PK"); 
+  const [callingCode, setCallingCode] = useState("+92");
 
   useEffect(() => {
     Animated.sequence([
-      Animated.timing(logoOpacity, { toValue: 1, duration: 800, useNativeDriver: true }),
+      Animated.timing(logoOpacity, {
+        toValue: 1,
+        duration: 800,
+        useNativeDriver: true,
+      }),
       Animated.parallel([
-        Animated.timing(formOpacity, { toValue: 1, duration: 1000, useNativeDriver: true }),
-        Animated.timing(formTranslateY, { toValue: 0, duration: 1000, useNativeDriver: true }),
+        Animated.timing(formOpacity, {
+          toValue: 1,
+          duration: 1000,
+          useNativeDriver: true,
+        }),
+        Animated.timing(formTranslateY, {
+          toValue: 0,
+          duration: 1000,
+          useNativeDriver: true,
+        }),
       ]),
     ]).start();
   }, []);
 
-  const pickImage = async (setter: React.Dispatch<React.SetStateAction<any>>) => {
+  const pickImage = async (
+    setter: React.Dispatch<React.SetStateAction<any>>
+  ) => {
     const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing: true,
@@ -202,45 +223,50 @@ const VetFormScreen = ({ navigation }: any) => {
   };
 
   const handleVetFormSubmit = async () => {
-    if (!username || !email || !password || !phoneNumber || !area || !qualification) {
+    if (
+      !username ||
+      !email ||
+      !password ||
+      !phoneNumber ||
+      !area ||
+      !qualification
+    ) {
       Alert.alert("Error", "All fields are required except availability.");
       return;
     }
-  
+
     setLoading(true); // Start loading
     console.log("Submitting form..."); // Debugging log
-  
+
     const formData = new FormData();
-  
+
     formData.append("name", username);
     formData.append("email", email);
     formData.append("password", password);
     formData.append("contact", phoneNumber);
     formData.append("qualification", qualification);
     formData.append("area", area);
-  
+
     if (availability) {
       formData.append("availability", availability);
     }
-  
-   if (certificate) {
-  formData.append("certificate", {
-    uri: certificate.uri,
-    type: "image/jpeg",
-    name: "certificate.jpg",
-  }as any);
-}
 
+    if (certificate) {
+      formData.append("certificate", {
+        uri: certificate.uri,
+        type: "image/jpeg",
+        name: "certificate.jpg",
+      } as any);
+    }
 
-if (imageurl) {
-  formData.append("imageUrl", {
-    uri: imageurl.uri,
-    type: "image/jpeg",
-    name: "profile.jpg",
-  }as any);
-}
+    if (imageurl) {
+      formData.append("imageUrl", {
+        uri: imageurl.uri,
+        type: "image/jpeg",
+        name: "profile.jpg",
+      } as any);
+    }
 
-  
     try {
       console.log("Sending form data to:", `${BASE_URL}/vets/createvets`);
       const response = await fetch(`${BASE_URL}/vets/createvets`, {
@@ -250,12 +276,15 @@ if (imageurl) {
         },
         body: formData,
       });
-  
+
       const data = await response.json();
-  
+
       if (response.ok) {
         console.log("Form submitted successfully:", data);
-        Alert.alert("Success", "Vet registration completed successfully. Wait for our email to successfully registering as Vet.");
+        Alert.alert(
+          "Success",
+          "Vet registration completed successfully. Wait for our email to successfully registering as Vet."
+        );
         navigation.navigate("Home");
       } else {
         console.error("Error response from server:", data);
@@ -269,7 +298,6 @@ if (imageurl) {
       console.log("Loading state reset");
     }
   };
-  
 
   return (
     <ScrollView contentContainerStyle={styles.scrollContainer}>
@@ -281,7 +309,10 @@ if (imageurl) {
         <Animated.View
           style={[
             styles.formContainer,
-            { opacity: formOpacity, transform: [{ translateY: formTranslateY }] },
+            {
+              opacity: formOpacity,
+              transform: [{ translateY: formTranslateY }],
+            },
           ]}
         >
           <Text style={styles.title}>Veterinarian Registration</Text>
@@ -299,32 +330,79 @@ if (imageurl) {
             onChangeText={setEmail}
             keyboardType="email-address"
           />
-          <TextInput
-            style={styles.input}
-            placeholder="Password"
-            value={password}
-            onChangeText={setPassword}
-            secureTextEntry
-          />
-          <TextInput
-            style={styles.input}
-            placeholder="Phone Number"
-            value={phoneNumber}
-            onChangeText={setPhoneNumber}
-            keyboardType="phone-pad"
-          />
+          <View style={styles.passwordContainer}>
+            <TextInput
+              style={styles.input}
+              placeholder="Password"
+              value={password}
+              onChangeText={setPassword}
+              secureTextEntry={!showPassword}
+            />
+            <TouchableOpacity
+              onPress={() => setShowPassword(!showPassword)}
+              style={styles.eyeIcon}
+            >
+              <Ionicons
+                name={showPassword ? "eye-off" : "eye"}
+                size={24}
+                color="gray"
+              />
+            </TouchableOpacity>
+          </View>
+          <View style={styles.phoneContainer}>
+            <CountryPicker
+              withFilter
+              withFlag
+              withCallingCode
+              countryCode={countryCode}
+              onSelect={(country) => {
+                setCountryCode(country.cca2);
+                setCallingCode(`+${country.callingCode[0]}`);
+              }}
+            />
+            <Text style={styles.callingCode}>{callingCode}</Text>
+            <TextInput
+              style={styles.phoneInput}
+              placeholder="Enter phone number"
+              value={phoneNumber}
+              onChangeText={(text) => {
+                const numericText = text.replace(/[^0-9]/g, ""); // Allow only numbers
+                if (numericText.length <= 10) {
+                  setPhoneNumber(numericText); // Allow only 11 digits
+                }
+              }}
+              keyboardType="phone-pad"
+            />
+          </View>
+
           <TextInput
             style={styles.input}
             placeholder="Area"
             value={area}
             onChangeText={setarea}
           />
-          <TextInput
-            style={styles.input}
-            placeholder="Qualification"
-            value={qualification}
-            onChangeText={setQualification}
-          />
+          <View style={styles.pickerContainer}>
+            <Picker
+              selectedValue={qualification}
+              onValueChange={(itemValue) => setQualification(itemValue)}
+              style={styles.picker}
+            >
+              <Picker.Item label="Select Qualification" value="" />
+              <Picker.Item
+                label="DVM (Doctor of Veterinary Medicine)"
+                value="DVM"
+              />
+              <Picker.Item
+                label="B.V.Sc (Bachelor of Veterinary Science)"
+                value="BVSc"
+              />
+              <Picker.Item
+                label="MVSc (Master of Veterinary Science)"
+                value="MVSc"
+              />
+              <Picker.Item label="PhD in Veterinary Medicine" value="PhD" />
+            </Picker>
+          </View>
           <TextInput
             style={styles.input}
             placeholder="Availability (e.g., 9:00 AM - 5:00 PM)"
@@ -332,14 +410,37 @@ if (imageurl) {
             onChangeText={setAvailability}
           />
 
-          <Button title="Upload Profile Image" onPress={() => pickImage(setProfileImage)} />
-          {imageurl && <Text style={styles.uploadText}>Profile Image Uploaded</Text>}
-
-          <Button title="Upload Certificate" onPress={() => pickImage(setCertificate)} />
-          {certificate && <Text style={styles.uploadText}>Certificate Uploaded</Text>}
+          <TouchableOpacity
+            style={styles.uploadButton}
+            onPress={() => pickImage(setProfileImage)}
+          >
+            <Ionicons name="cloud-upload-outline" size={20} color="#FFFFFF" />
+            <Text style={styles.uploadButtonText}>Upload Profile Image</Text>
+          </TouchableOpacity>
+          {imageurl && (
+            <Text style={styles.uploadText}>Profile Image Uploaded</Text>
+          )}
 
           <TouchableOpacity
-            style={[styles.submitButton, loading && { backgroundColor: "#b5e3d9" }]}
+            style={styles.uploadButton}
+            onPress={() => pickImage(setCertificate)}
+          >
+            <Ionicons
+              name="document-attach-outline"
+              size={20}
+              color="#FFFFFF"
+            />
+            <Text style={styles.uploadButtonText}>Upload Certificate</Text>
+          </TouchableOpacity>
+          {certificate && (
+            <Text style={styles.uploadText}>Certificate Uploaded</Text>
+          )}
+
+          <TouchableOpacity
+            style={[
+              styles.submitButton,
+              loading && { backgroundColor: "#b5e3d9" },
+            ]}
             onPress={loading ? undefined : handleVetFormSubmit}
             disabled={loading}
           >
@@ -357,15 +458,103 @@ if (imageurl) {
 
 const styles = StyleSheet.create({
   scrollContainer: { flexGrow: 1, justifyContent: "center" },
-  container: { flex: 1, justifyContent: "center", alignItems: "center", padding: 20, backgroundColor: "#F7F8FA" },
+  container: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    padding: 20,
+    backgroundColor: "#F7F8FA",
+  },
   logoContainer: { marginBottom: 30 },
-  logo: { width: 120, height: 120, resizeMode: "contain" },
-  formContainer: { width: "100%", padding: 20, backgroundColor: "#FFFFFF", borderRadius: 10 },
-  title: { fontSize: 22, fontWeight: "700", color: "#333", textAlign: "center", marginBottom: 20 },
-  input: { height: 50, backgroundColor: "#F2F2F2", borderRadius: 8, paddingHorizontal: 15, marginBottom: 15 },
-  submitButton: { backgroundColor: "#259D8A", paddingVertical: 15, borderRadius: 8, alignItems: "center" },
+  logo: {
+    width: 120,
+    height: 120,
+    marginTop: 40,
+    marginBottom: 20,
+    resizeMode: "contain",
+  },
+  passwordContainer: { position: "relative" },
+  eyeIcon: { position: "absolute", right: 15, top: 15 },
+  uploadButton: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "#259D8A",
+    paddingVertical: 12,
+    borderRadius: 8,
+    width: "100%",
+    marginBottom: 10,
+    paddingHorizontal: 10,
+  },
+  uploadButtonText: {
+    color: "#FFFFFF",
+    fontSize: 14,
+    fontWeight: "600",
+    marginLeft: 8,
+    flexShrink: 1,
+    textAlign: "center",
+  },
+  phoneContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#fff",
+    borderWidth: 1,
+    borderColor: "#ccc",
+    borderRadius: 8,
+    paddingHorizontal: 10,
+    marginBottom: 10,
+  },
+  callingCode: {
+    fontSize: 16,
+    marginRight: 5,
+  },
+  phoneInput: {
+    flex: 1,
+    fontSize: 16,
+    padding: 10,
+  },
+
+  uploadText: {
+    marginTop: 5,
+    color: "#259D8A",
+    fontSize: 14,
+    fontWeight: "500",
+  },
+  submitButton: {
+    backgroundColor: "#259D8A",
+    paddingVertical: 15,
+    borderRadius: 8,
+    alignItems: "center",
+    width: "100%",
+  },
   submitButtonText: { color: "#FFFFFF", fontSize: 18, fontWeight: "600" },
-  uploadText: { marginVertical: 10, color: "#259D8A" },
+  pickerContainer: {
+    width: "100%",
+    backgroundColor: "#F2F2F2",
+    borderRadius: 8,
+    marginBottom: 15,
+  },
+  picker: { height: 50, width: "100%" },
+  formContainer: {
+    width: "100%",
+    padding: 20,
+    backgroundColor: "#FFFFFF",
+    borderRadius: 10,
+  },
+  title: {
+    fontSize: 22,
+    fontWeight: "700",
+    color: "#333",
+    textAlign: "center",
+    marginBottom: 20,
+  },
+  input: {
+    height: 50,
+    backgroundColor: "#F2F2F2",
+    borderRadius: 8,
+    paddingHorizontal: 15,
+    marginBottom: 15,
+  },
 });
 
 export default VetFormScreen;

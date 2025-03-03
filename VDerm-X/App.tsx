@@ -15,9 +15,8 @@ import RedZoneScreen from './src/Screens/redZoneScreen';
 import VetFormScreen from './src/Screens/vetformScreen';
 import VetHomeScreen from './src/Screens/vetHomeScreen';
 import VetAppointmentScreen from './src/Screens/vetAppointmentScreen';
-import VetScheduleScreen from './src/Screens/vetScheduleScreen';
-import VetDetailScreen from './src/Screens/VetDetailScreen ';
 import ChatbotScreen from './src/Screens/ChatbotScreen';
+import VetDetailScreen from './src/Screens/VetDetailScreen';
 
 
 // Define the param list for all screens
@@ -34,7 +33,6 @@ export type RootStackParamList = {
   VetForm: undefined;
   RedZone: undefined;
   VetHome: undefined;
-  VetSchedule: undefined;
   VetAppointment: undefined;
   VetDetail:undefined;
   Chatbot:undefined;
@@ -62,7 +60,6 @@ const App = () => {
         <Stack.Screen name='UserChat' component={UserChatScreen} options={{headerShown:false}}/>
         <Stack.Screen name='VetForm' component={VetFormScreen} options={{headerShown:false}}/>
         <Stack.Screen name='RedZone' component={RedZoneScreen} options={{headerShown:false}}/>
-        <Stack.Screen name='VetSchedule' component={VetScheduleScreen} options={{headerShown:false}}/>
         <Stack.Screen name='VetAppointment' component={VetAppointmentScreen} options={{headerShown:false}}/>
         <Stack.Screen name='VetHome' component={VetHomeScreen} options={{headerShown:false}}/>
         <Stack.Screen name="VetDetail" component={VetDetailScreen} options={{headerShown:false}}/>
