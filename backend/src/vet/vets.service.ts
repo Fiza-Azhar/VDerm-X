@@ -5,6 +5,8 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Vet } from './vet.entity';
+import * as nodemailer from 'nodemailer';
+
 @Injectable()
 export class VetService {
   constructor(@InjectModel('Vet') private readonly vetModel: Model<Vet>) {}
@@ -59,5 +61,32 @@ export class VetService {
       vet.approveStatus = true;
       await vet.save(); // Save changes to the database
       return vet;
+    }
+
+    async sendNotificationEmail(email: string, name: string, message:string) {
+      console.log(nodemailer);
+      const transporter = nodemailer.createTransport({
+        service: 'gmail',
+        auth: {
+          user: process.env.EMAIL_USER,  // Access the email from the .env file
+          pass: process.env.EMAIL_PASS,  // Access the password from the .env file
+        },
+      });
+    
+      const mailOptions = {
+        from: process.env.EMAIL_USER,
+        to: email,
+        subject: 'Notification from Appointment',
+        text: `Notification for Appointment Booking,
+    
+        Name: ${name}
+        Email: ${email}
+        Detail:${message}
+    
+        Thank you,
+        The Vet Derm-X Team`,
+      };
+    
+      await transporter.sendMail(mailOptions);
     }
 }

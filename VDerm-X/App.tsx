@@ -16,7 +16,7 @@ import VetFormScreen from './src/Screens/vetformScreen';
 import VetHomeScreen from './src/Screens/vetHomeScreen';
 import VetAppointmentScreen from './src/Screens/vetAppointmentScreen';
 import VetScheduleScreen from './src/Screens/vetScheduleScreen';
-import VetDetailScreen from './src/Screens/VetDetailScreen ';
+import VetDetailScreen from './src/Screens/VetDetailScreen';
 import ChatbotScreen from './src/Screens/ChatbotScreen';
 
 

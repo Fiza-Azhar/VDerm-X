@@ -10,7 +10,8 @@ export class Vet {
 
   @Column({ unique: true })
   email: string;
-
+  @Column()
+  password: string;
   @Column()
   qualification: string;
 

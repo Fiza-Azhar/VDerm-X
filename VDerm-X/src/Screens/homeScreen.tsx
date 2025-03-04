@@ -13,7 +13,7 @@ import { useNavigation } from "@react-navigation/native";
 import type { StackNavigationProp } from "@react-navigation/stack";
 import type { RootStackParamList } from "../../App";
 import UBottomTabBar from "./UBottomTabBar";
-const RASA_SERVER_URL = "https://adab-35-203-132-100.ngrok-free.app/webhooks/rest/webhook"; // Update this with your actual Rasa server URL
+const RASA_SERVER_URL = "https://2902-34-126-129-224.ngrok-free.app/webhooks/rest/webhook"; // Update this with your actual Rasa server URL
 
 const HomeScreen = ({ route }: { route: any }) => {
   const [messages, setMessages] = useState<{ sender: string; text: string }[]>([]);

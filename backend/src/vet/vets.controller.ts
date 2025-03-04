@@ -103,7 +103,95 @@ export class VetController {
   async getOne(@Param('id') id: string): Promise<Vet> {
     return this.vetService.findOne(id);
   }
-
+/*
+  @Post('createvets')
+  @UseInterceptors(
+    FileFieldsInterceptor([
+      { name: 'certificate', maxCount: 1 },
+      { name: 'imageUrl', maxCount: 1 },
+    ], {
+      storage: diskStorage({
+        destination: './uploads',
+        filename: (req, file, callback) => {
+          const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
+          const ext = extname(file.originalname);
+          callback(null, `${file.fieldname}-${uniqueSuffix}${ext}`);
+        },
+      }),
+      fileFilter: (req, file, callback) => {
+        // Accept images only
+        if (!file.mimetype.match(/^image\/(jpeg|png|gif|bmp)$/)) {
+          return callback(new Error('Only image files are allowed!'), false);
+        }
+        callback(null, true);
+      },
+    }),
+  )
+  async create(
+    @Body() vetData: Partial<Vet>,
+    @UploadedFiles() files: { certificate?: Express.Multer.File[]; imageUrl?: Express.Multer.File[] },
+    @Res() res: Response,
+  ) {
+    const certificateFile = files.certificate?.[0];
+    const imageFile = files.imageUrl?.[0];
+  
+    let compressedCertificateUrl: string | null = null;
+    let compressedImageUrl: string | null = null;
+  
+    try {
+      // Process the certificate file
+      if (certificateFile) {
+        const inputPath = `./uploads/${certificateFile.filename}`;
+        const outputPath = `./uploads/compressed-${certificateFile.filename}`;
+  
+        const certificateImage = await Jimp.read(inputPath);
+        await certificateImage
+          .resize(300, Jimp.AUTO) // Resize width to 300px, auto height
+          .quality(80) // Compress quality
+          .writeAsync(outputPath);
+  
+        // Remove the original image file
+        fs.unlinkSync(inputPath);
+  
+        compressedCertificateUrl = `/uploads/compressed-${certificateFile.filename}`;
+      }
+  
+      // Process the image file
+      if (imageFile) {
+        const inputPath = `./uploads/${imageFile.filename}`;
+        const outputPath = `./uploads/compressed-${imageFile.filename}`;
+  
+        const image = await Jimp.read(inputPath);
+        await image
+          .resize(300, Jimp.AUTO) // Resize width to 300px, auto height
+          .quality(80) // Compress quality
+          .writeAsync(outputPath);
+  
+        // Remove the original image file
+        fs.unlinkSync(inputPath);
+  
+        compressedImageUrl = `/uploads/compressed-${imageFile.filename}`;
+      }
+  
+      // Pass the compressed file paths to the vetService
+      const vet = await this.vetService.create(vetData, compressedCertificateUrl, compressedImageUrl);
+      return res.status(HttpStatus.CREATED).json(vet);
+  
+    } catch (error) {
+      console.error('Error processing the images:', error);
+  
+      // Cleanup: remove files if they exist
+      if (certificateFile && fs.existsSync(`./uploads/${certificateFile.filename}`)) {
+        fs.unlinkSync(`./uploads/${certificateFile.filename}`);
+      }
+      if (imageFile && fs.existsSync(`./uploads/${imageFile.filename}`)) {
+        fs.unlinkSync(`./uploads/${imageFile.filename}`);
+      }
+  
+      return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: 'Error processing the images.' });
+    }
+  }
+  */
   @Post('createvets')
   @UseInterceptors(
     FileFieldsInterceptor([
@@ -126,7 +214,7 @@ export class VetController {
       console.log('Uploaded Files:', files);
   
       // Ensure the uploads directory exists
-      const uploadsDirectory = path.join(__dirname, 'uploads');
+      const uploadsDirectory = path.join(__dirname, '..', 'uploads');
       await fs.promises.mkdir(uploadsDirectory, { recursive: true });
   
       // Process the certificate file
@@ -144,7 +232,7 @@ export class VetController {
         compressedCertificateUrl = `/uploads/compressed-${certificateFileName}`;
   
         // Remove original file after compression
-        await fs.promises.unlink(certificateFilePath);
+
       } else {
         console.error('Certificate file is missing or has no buffer.');
       }
@@ -164,7 +252,6 @@ export class VetController {
         compressedImageUrl = `/uploads/compressed-${imageFileName}`;
   
         // Remove original file after compression
-        await fs.promises.unlink(imageFilePath);
       } else {
         console.error('Image file is missing or has no buffer.');
       }
@@ -213,6 +300,23 @@ async getAllVets(): Promise<Vet[]> {
 @Get('all')
 async getAllVet(): Promise<Vet[]> {
   return await this.vetService.getAllVets();
+}
+@Post('send-notification') 
+async sendNotification(@Body('email') email: string, @Body('name') name: string, @Body('message') message :string) {
+  try {
+    await this.vetService.sendNotificationEmail(email, name,message);
+
+    return {
+      success: true,
+      message: 'Notification email sent successfully',
+    };
+  } catch (error) {
+    return {
+      success: false,
+      message: 'Failed to send notification email',
+      error: error.message,
+    };
+  }
 }
 
 }

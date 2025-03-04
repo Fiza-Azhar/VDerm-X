@@ -15,11 +15,11 @@ script_dir = os.path.dirname(os.path.abspath(__file__))  # Get the current scrip
 model_path = os.path.join(script_dir, 'final_model.keras')  # Model is in the same directory as the script
 
 # Check if the model file exists
- if not os.path.exists(model_path):
+if not os.path.exists(model_path):
     raise ValueError(f"Model file not found: {model_path}")
 
 # Load the model
- model = load_model(model_path)
+model = load_model(model_path)
 
 def preprocess_image(image_path):
     """
