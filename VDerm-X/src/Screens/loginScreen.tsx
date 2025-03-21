@@ -7,21 +7,22 @@ import {
   TextInput,
   Animated,
   Image,
-  Alert
+  Alert,
 } from "react-native";
 import { BASE_URL } from "../config";
+import { Ionicons } from "@expo/vector-icons";
 
 const LoginScreen = ({ navigation }: any) => {
-  const formOpacity = useRef(new Animated.Value(0)).current; // Fade-in animation for the form
-  const formTranslateY = useRef(new Animated.Value(50)).current; // Slide-up animation for the form
-  const logoOpacity = useRef(new Animated.Value(0)).current; // Fade-in animation for the logo
+  const formOpacity = useRef(new Animated.Value(0)).current;
+  const formTranslateY = useRef(new Animated.Value(50)).current;
+  const logoOpacity = useRef(new Animated.Value(0)).current;
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
 
-  // Animations for logo and form
   useEffect(() => {
-    Animated.sequence([ 
+    Animated.sequence([
       Animated.timing(logoOpacity, {
         toValue: 1,
         duration: 800,
@@ -41,53 +42,46 @@ const LoginScreen = ({ navigation }: any) => {
       ]),
     ]).start();
   }, []);
+
   const handleSubmit = async () => {
-    const userData = {
-        email,
-        password,
-    };
-    if (email === "" || password === "") {
+    if (!email || !password) {
       Alert.alert("Error", "Please enter both email and password");
       return;
     }
 
     try {
-      const response = await fetch(`${BASE_URL}/auth/login`, { // Updated endpoint
-          method: 'POST',
-          headers: {
-              'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(userData),
+      const response = await fetch(`${BASE_URL}/auth/login`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email, password }),
       });
 
       const data = await response.json();
 
       if (response.ok) {
-          // Navigate to HomePage on successful login
-          navigation.navigate("Home", { email: data.email });
+        navigation.navigate("Home", { email: data.email });
       } else {
-          Alert.alert('Error', data.message);
+        Alert.alert("Error", data.message);
       }
-  } catch (error) {
-      Alert.alert('Error', 'Error during login');
-  }
-};
+    } catch (error) {
+      Alert.alert("Error", "Error during login");
+    }
+  };
 
   return (
     <View style={styles.container}>
-      {/* Animated Logo */}
+      {/* Logo */}
       <Animated.View style={[styles.logoContainer, { opacity: logoOpacity }]}>
         <Image source={require("../Assets/logo.png")} style={styles.logo} />
       </Animated.View>
 
-      {/* Animated Form Container */}
+      {/* Form */}
       <Animated.View
         style={[
           styles.formContainer,
-          {
-            opacity: formOpacity,
-            transform: [{ translateY: formTranslateY }],
-          },
+          { opacity: formOpacity, transform: [{ translateY: formTranslateY }] },
         ]}
       >
         <Text style={styles.title}>Login</Text>
@@ -98,19 +92,27 @@ const LoginScreen = ({ navigation }: any) => {
           placeholder="Email"
           placeholderTextColor="#888"
           value={email}
-          onChangeText={(text) => setEmail(text)}
+          onChangeText={setEmail}
           keyboardType="email-address"
         />
 
-        {/* Password Input */}
-        <TextInput
-          style={styles.input}
-          placeholder="Password"
-          placeholderTextColor="#888"
-          value={password}
-          onChangeText={(text) => setPassword(text)}
-          secureTextEntry
-        />
+        {/* Password Input with Toggle */}
+        <View style={styles.passwordContainer}>
+          <TextInput
+            style={styles.input}
+            placeholder="Password"
+            placeholderTextColor="#888"
+            value={password}
+            onChangeText={setPassword}
+            secureTextEntry={!showPassword}
+          />
+          <TouchableOpacity
+            onPress={() => setShowPassword(!showPassword)}
+            style={styles.eyeIcon}
+          >
+            <Ionicons name={showPassword ? "eye-off" : "eye"} size={24} color="gray" />
+          </TouchableOpacity>
+        </View>
 
         {/* Login Button */}
         <TouchableOpacity style={styles.loginButton} onPress={handleSubmit}>
@@ -132,15 +134,15 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     padding: 20,
-    backgroundColor: "#F7F8FA", // Light background
+    backgroundColor: "#F7F8FA",
   },
   logoContainer: {
-    marginBottom: 30, // Space between logo and form
+    marginBottom: 30,
   },
   logo: {
-    width: 120, // Adjust the logo width
-    height: 120, // Adjust the logo height
-    resizeMode: "contain", // Maintain aspect ratio
+    width: 120,
+    height: 120,
+    resizeMode: "contain",
   },
   formContainer: {
     width: "100%",
@@ -167,6 +169,14 @@ const styles = StyleSheet.create({
     marginBottom: 15,
     fontSize: 16,
     color: "#333",
+  },
+  passwordContainer: {
+    position: "relative",
+  },
+  eyeIcon: {
+    position: "absolute",
+    right: 15,
+    top: 12,
   },
   loginButton: {
     backgroundColor: "#259D8A",

@@ -213,6 +213,7 @@ import {
 import { Ionicons, MaterialIcons } from "@expo/vector-icons";
 import axios from "axios";
 import { BASE_URL } from "../config";
+import { Picker } from '@react-native-picker/picker'; 
 import UBottomTabBar from "./UBottomTabBar";
 
 // Define the interface for the vet object
