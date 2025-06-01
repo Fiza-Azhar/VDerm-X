@@ -121,6 +121,7 @@ export class VetController {
     let compressedCertificateUrl: string | null = null;
     let compressedImageUrl: string | null = null;
   
+    
     try {
       console.log('Uploaded Files:', files);
   

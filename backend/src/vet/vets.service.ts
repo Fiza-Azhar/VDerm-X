@@ -11,6 +11,7 @@ export class VetService {
     return this.vetModel.find().exec();
   }
 
+  
   async findOne(id: string): Promise<Vet> {
     const vet = await this.vetModel.findById(id).exec();
     if (!vet) {
