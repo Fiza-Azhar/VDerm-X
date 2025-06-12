@@ -8,7 +8,7 @@ export const VetSchema = new Schema({
   contact: { type: String, required: true },
   area: { type: String, required: true },
   availability: { type: String },
-  imageUrl: { type: String },
+  imageUrl: { type: String,required:true },
   approveStatus: { type: Boolean, default: false },
 });
 

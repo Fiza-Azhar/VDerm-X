@@ -18,19 +18,19 @@ export class VetService {
     }
     return vet;
   }
-
-  async create(
-    vetData: Partial<Vet>,
-    certificate?: Express.Multer.File,
-    image?: Express.Multer.File,
-  ): Promise<Vet> {
-    const newVet = new this.vetModel({
-      ...vetData,
-      certificate: certificate?.buffer.toString('base64'), // Store as Base64
-      imageUrl: image?.buffer.toString('base64'), // Store as Base64
-    });
-    return newVet.save();
+  async getAllVets(): Promise<Vet[]> {
+    return await this.vetModel.find().exec();
   }
+
+  async create(vetData: Partial<Vet>, certificate: string | null, imageUrl: string | null): Promise<Vet> {
+    const vet = new this.vetModel({
+      ...vetData,
+      certificate,
+      imageUrl,
+    });
+    return vet.save(); // Save the vet to MongoDB
+  }
+  
 
   async update(id: string, updateData: Partial<Vet>): Promise<Vet> {
     const vet = await this.vetModel.findByIdAndUpdate(id, updateData, { new: true }).exec();
